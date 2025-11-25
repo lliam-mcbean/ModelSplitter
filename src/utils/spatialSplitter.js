@@ -69,7 +69,6 @@ export class SpatialSplitter {
   bakeWorldTransform(geom, matrixWorld) {
     const g = geom.clone()
     g.applyMatrix4(matrixWorld)
-    // After baking, clear transform on the mesh that will hold this geometry
     return g
   }
 
@@ -106,14 +105,6 @@ export class SpatialSplitter {
       }
     }
     return tris
-  }
-
-  downloadBlob(blob, filename) {
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = filename
-    a.click()
-    URL.revokeObjectURL(a.href)
   }
 
   async splitGlbIntoTiles(file) {
@@ -186,13 +177,8 @@ export class SpatialSplitter {
               // Keep geometry in absolute world coordinates
               const subsetGeom = this.cloneSubsetGeometry(bakedGeom, tris)
               
-              // Create mesh with the subset geometry
-              // Keep at origin since geometry is already in world space
+              // Create mesh with the subset geometry at origin since geometry is already in world space
               const tileMesh = new THREE.Mesh(subsetGeom, mesh.material)
-              tileMesh.position.set(0, 0, 0)
-              tileMesh.rotation.set(0, 0, 0)
-              tileMesh.scale.set(1, 1, 1)
-              
               tileScene.add(tileMesh)
             }
           }

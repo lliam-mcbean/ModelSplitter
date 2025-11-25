@@ -1,7 +1,6 @@
-import React, { Suspense, useRef, useState, useEffect } from 'react'
+import React, { Suspense, useRef, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Environment } from '@react-three/drei'
-import * as THREE from 'three'
 
 // Loading component
 function LoadingSpinner() {
@@ -75,27 +74,11 @@ function TileModel({ tile, visible = true, color = null }) {
 }
 
 // Main TileViewer component
-export default function TileViewer({ file, tiles = null, tileVisibility = {} }) {
-  const [modelUrl, setModelUrl] = useState(null)
-
-  useEffect(() => {
-    if (file) {
-      const url = URL.createObjectURL(file)
-      setModelUrl(url)
-      
-      // Cleanup previous URL
-      return () => {
-        if (modelUrl) {
-          URL.revokeObjectURL(modelUrl)
-        }
-      }
-    }
-  }, [file])
-
-  if (!file && !tiles) {
+export default function TileViewer({ tiles = null, tileVisibility = {} }) {
+  if (!tiles || tiles.length === 0) {
     return (
       <div className="w-full h-96 bg-gray-100 rounded-lg flex items-center justify-center">
-        <p className="text-gray-500">No model loaded</p>
+        <p className="text-gray-500">No tiles loaded</p>
       </div>
     )
   }
@@ -136,27 +119,15 @@ export default function TileViewer({ file, tiles = null, tileVisibility = {} }) 
           {/* Environment for reflections */}
           <Environment preset="studio" />
           
-          {/* Render original model or tiles */}
-          {tiles && tiles.length > 0 ? (
-            // Render tiles
-            tiles.map((tile, index) => (
-              <TileModel
-                key={index}
-                tile={tile}
-                visible={tileVisibility[index] !== false}
-                color={tileColors[index % tileColors.length]}
-              />
-            ))
-          ) : (
-            // Render original model (fallback)
-            modelUrl && (
-              <primitive 
-                object={new THREE.Scene()} 
-                scale={1} 
-                position={[0, 0, 0]} 
-              />
-            )
-          )}
+          {/* Render tiles */}
+          {tiles.map((tile, index) => (
+            <TileModel
+              key={index}
+              tile={tile}
+              visible={tileVisibility[index] !== false}
+              color={tileColors[index % tileColors.length]}
+            />
+          ))}
           
           {/* Camera controls */}
           <OrbitControls 
@@ -169,14 +140,6 @@ export default function TileViewer({ file, tiles = null, tileVisibility = {} }) 
         </Suspense>
       </Canvas>
       
-      {/* Loading overlay */}
-      <Suspense fallback={
-        <div className="absolute inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center">
-          <LoadingSpinner />
-        </div>
-      }>
-        <div></div>
-      </Suspense>
     </div>
   )
 }

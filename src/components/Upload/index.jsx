@@ -50,7 +50,7 @@ export default function Upload() {
     const validFiles = []
     const errors = []
     
-    files.forEach((file, index) => {
+    files.forEach((file) => {
       // Validate file type
       const validExtensions = ['.gltf', '.glb']
       const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'))
@@ -90,10 +90,6 @@ export default function Upload() {
       }
       console.log('GLTF files uploaded:', validFiles.map(f => f.name))
     }
-  }
-
-  const handleFile = (file) => {
-    handleFiles([file])
   }
 
   const handleButtonClick = () => {
@@ -384,7 +380,6 @@ export default function Upload() {
             </div>
             {tiles ? (
               <TileViewer 
-                file={uploadedFiles[selectedFileIndex]} 
                 tiles={tiles}
                 tileVisibility={tileVisibility}
               />
