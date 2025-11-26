@@ -107,9 +107,9 @@ export class SpatialSplitter {
     return tris
   }
 
-  async splitGlbIntoTiles(file) {
+  async splitGlbIntoTiles(file, gridSize = 2) {
     try {
-      console.log('Loading GLB file for spatial splitting...')
+      console.log(`Loading GLB file for spatial splitting (${gridSize}x${gridSize} grid)...`)
       
       // Create object URL from file
       const url = URL.createObjectURL(file)
@@ -136,8 +136,7 @@ export class SpatialSplitter {
 
       console.log('Overall bounds:', overallBBox)
 
-      // Create 2x2 grid (4 tiles)
-      const gridSize = 2
+      // Create grid based on input size
       const tiles = []
       
       const xSize = (overallBBox.max.x - overallBBox.min.x) / gridSize
@@ -212,7 +211,7 @@ export class SpatialSplitter {
         }
       }
 
-      console.log(`Created ${tiles.length} spatial tiles from 2x2 grid`)
+      console.log(`Created ${tiles.length} spatial tiles from ${gridSize}x${gridSize} grid`)
       return tiles
 
     } catch (error) {

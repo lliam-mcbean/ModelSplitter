@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export default function SpatialTools({ onSplitModel, isProcessing, tiles, currentFileName }) {
+  const [gridSize, setGridSize] = useState(2)
+
   const handleSplit = () => {
-    onSplitModel()
+    onSplitModel(gridSize)
   }
 
   return (
@@ -17,6 +19,29 @@ export default function SpatialTools({ onSplitModel, isProcessing, tiles, curren
             Splitting: <span className="font-medium">{currentFileName}</span>
           </p>
         )}
+
+        {/* Grid Size Selection */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <label className="text-sm font-medium text-gray-700">
+              Grid Size: <span className="text-blue-600">{gridSize}x{gridSize}</span> ({gridSize * gridSize} chunks)
+            </label>
+          </div>
+          <input
+            type="range"
+            min="2"
+            max="8"
+            step="1"
+            value={gridSize}
+            onChange={(e) => setGridSize(parseInt(e.target.value))}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            disabled={isProcessing}
+          />
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>2x2</span>
+            <span>8x8</span>
+          </div>
+        </div>
         
         <div className="space-y-3">
           <button
@@ -28,7 +53,7 @@ export default function SpatialTools({ onSplitModel, isProcessing, tiles, curren
                 : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
-            {isProcessing ? 'Processing...' : 'Split into 4 Spatial Chunks (2x2 Grid)'}
+            {isProcessing ? 'Processing...' : `Split into ${gridSize * gridSize} Spatial Chunks`}
           </button>
         </div>
       </div>
@@ -60,7 +85,7 @@ export default function SpatialTools({ onSplitModel, isProcessing, tiles, curren
         <h5 className="text-sm font-medium text-gray-700 mb-2">How it works:</h5>
         <ul className="text-xs text-gray-600 space-y-1">
           <li>• Computes overall bounding box of the model</li>
-          <li>• Divides into 2x2 spatial grid (4 chunks)</li>
+          <li>• Divides into {gridSize}x{gridSize} spatial grid ({gridSize * gridSize} chunks)</li>
           <li>• Each chunk contains triangles in that region</li>
           <li>• Creates separate GLB files for each chunk</li>
           <li>• Preserves geometry in world space</li>

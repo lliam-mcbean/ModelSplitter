@@ -134,18 +134,18 @@ export default function Upload() {
     }
   }
 
-  const handleSplitModel = async () => {
+  const handleSplitModel = async (gridSize) => {
     if (uploadedFiles.length === 0) return
 
     setIsProcessing(true)
     setError('')
 
     try {
-      console.log('Starting mesh-based split')
+      console.log(`Starting spatial split with ${gridSize}x${gridSize} grid`)
       
       // Split the currently selected file
       const currentFile = uploadedFiles[selectedFileIndex]
-      const splitTiles = await spatialSplitter.current.splitGlbIntoTiles(currentFile)
+      const splitTiles = await spatialSplitter.current.splitGlbIntoTiles(currentFile, gridSize)
       setTiles(splitTiles)
       
       // Initialize visibility for all tiles
